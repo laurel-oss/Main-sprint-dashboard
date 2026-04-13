@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Brellium — April 2026 Sprint Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg:        #190042;
+    --bg2:       #1f0052;
+    --card:      #240060;
+    --card2:     #2a006e;
+    --border:    rgba(161,104,255,0.18);
+    --accent:    #A168FF;
+    --muted:     #C9B0FF;
+    --text:      #EDE0FF;
+    --subtext:   #B89FDD;
+    --green:     #10B981;
+    --amber:     #F59E0B;
+    --red:       #EF4444;
+    --green-bg:  rgba(16,185,129,0.12);
+    --amber-bg:  rgba(245,158,11,0.12);
+    --red-bg:    rgba(239,68,68,0.12);
+    --sidebar-w: 220px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    padding: 0 32px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .logo-mark {
+    width: 32px;
+    height: 32px;
+    background: var(--accent);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .logo-mark svg { width: 18px; height: 18px; }
+
+  .logo-name {
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    color: #fff;
+  }
+
+  .header-meta {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .sprint-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+
+  .date-badge {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent);
+    background: rgba(161,104,255,0.12);
+    border: 1px solid rgba(161,104,255,0.25);
+    border-radius: 6px;
+    padding: 4px 10px;
+  }
+
+  /* ── LAYOUT ── */
+  .layout {
+    display: flex;
+    flex: 1;
+  }
+
+  /* ── SIDEBAR ── */
+  aside {
+    width: var(--sidebar-w);
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    flex-shrink: 0;
+    position: sticky;
+    top: 64px;
+    height: calc(100vh - 64px);
+    overflow-y: auto;
+  }
+
+  .sidebar-section {
+    margin-bottom: 28px;
+    padding: 0 18px;
+  }
+
+  .sidebar-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--subtext);
+    margin-bottom: 10px;
+    padding-left: 2px;
+  }
+
+  .filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s, color 0.15s;
+    margin-bottom: 2px;
+  }
+
+  .filter-btn:hover {
+    background: rgba(161,104,255,0.1);
+    color: var(--text);
+  }
+
+  .filter-btn.active {
+    background: rgba(161,104,255,0.16);
+    color: #fff;
+    font-weight: 500;
+  }
+
+  .filter-btn .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .filter-btn .count {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--subtext);
+    background: rgba(161,104,255,0.1);
+    border-radius: 4px;
+    padding: 1px 6px;
+  }
+
+  .dept-row-btn {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    width: 100%;
+    padding: 7px 10px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s;
+    margin-bottom: 2px;
+  }
+
+  .dept-row-btn:hover {
+    background: rgba(161,104,255,0.1);
+  }
+
+  .dept-row-btn.active {
+    background: rgba(161,104,255,0.16);
+  }
+
+  .dept-row-name {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    white-space: nowrap;
+  }
+
+  .dept-row-btn.active .dept-row-name {
+    color: #fff;
+  }
+
+  .dept-row-owner {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--subtext);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ── MAIN ── */
+  main {
+    flex: 1;
+    padding: 28px 32px;
+    overflow: auto;
+    max-width: 1100px;
+  }
+
+  /* ── OVERVIEW CONTEXT ── */
+  .dept-breakdown {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .dept-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+  }
+
+  .dept-chip:hover,
+  .dept-chip.active {
+    background: rgba(161,104,255,0.18);
+    border-color: rgba(161,104,255,0.4);
+    color: #fff;
+  }
+
+  .dept-chip.active .dept-chip-count {
+    color: #fff;
+  }
+
+  .dept-chip-count {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .overview-section {
+    margin-bottom: 28px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+  }
+
+  .overview-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 18px;
+  }
+
+  .overview-owner-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.4px;
+    white-space: nowrap;
+  }
+
+  .overview-title-row {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-bottom: 0;
+  }
+
+  .overview-titles h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.4px;
+    white-space: nowrap;
+  }
+
+  .overview-period-block {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+  }
+
+  .period-range {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: -0.2px;
+  }
+
+  .period-divider {
+    font-size: 14px;
+    color: var(--border);
+  }
+
+  .period-updated {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--subtext);
+  }
+
+  .period-updated-label {
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .overview-stats {
+    display: flex;
+    gap: 0;
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+  }
+
+  .stat-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-right: 20px;
+  }
+
+  .stat-item + .stat-item {
+    padding-left: 20px;
+    padding-right: 20px;
+    border-left: 1px solid var(--border);
+  }
+
+  .stat-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--subtext);
+  }
+
+  .stat-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+  }
+
+  .stat-sub {
+    font-size: 11.5px;
+    color: var(--subtext);
+  }
+
+  /* ── SUMMARY BAR ── */
+  .summary-section {
+    margin-bottom: 28px;
+  }
+
+  .summary-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+
+  .summary-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.2px;
+  }
+
+  .summary-counts {
+    display: flex;
+    gap: 16px;
+  }
+
+  .summary-count {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .summary-count .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .bar-track {
+    height: 10px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 99px;
+    overflow: hidden;
+    display: flex;
+  }
+
+  .bar-seg {
+    height: 100%;
+    transition: width 0.6s ease;
+  }
+
+  /* ── DEPT SECTION ── */
+  .dept-section {
+    margin-bottom: 36px;
+  }
+
+  .dept-title-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .dept-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--subtext);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+
+  .dept-owner-tag {
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: -0.1px;
+  }
+
+  .dept-divider {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .goals-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  /* ── GOAL CARD ── */
+  .goal-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px 20px;
+    min-height: 200px;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.15s;
+  }
+
+  .goal-card:hover {
+    border-color: rgba(161,104,255,0.35);
+  }
+
+  .goal-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 10px;
+  }
+
+  .rag-pill {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    border-radius: 6px;
+    padding: 3px 9px;
+    margin-top: 1px;
+    white-space: nowrap;
+  }
+
+  .rag-pill.green { background: var(--green-bg); color: var(--green); }
+  .rag-pill.amber { background: var(--amber-bg); color: var(--amber); }
+  .rag-pill.red   { background: var(--red-bg);   color: var(--red);   }
+
+  .rag-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  .goal-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.4;
+  }
+
+  .goal-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .meta-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.7px;
+    text-transform: uppercase;
+    color: var(--subtext);
+  }
+
+  .meta-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  .goal-narrative {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 12.5px;
+    line-height: 1.6;
+    color: var(--subtext);
+  }
+
+  .narrative-toggle {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .narrative-toggle:hover { text-decoration: underline; }
+
+  .narrative-body {
+    display: none;
+    margin-top: 6px;
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: var(--subtext);
+    white-space: pre-wrap;
+  }
+
+  .narrative-body.open { display: block; }
+
+  /* hidden by filter */
+  .hidden { display: none; }
+
+  /* scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(161,104,255,0.25); border-radius: 99px; }
+
+  .clear-filter {
+    font-size: 11px;
+    color: var(--accent);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    padding: 0;
+    margin-left: 4px;
+  }
+  .clear-filter:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="2" y="2" width="6" height="6" rx="1.5" fill="white"/>
+        <rect x="10" y="2" width="6" height="6" rx="1.5" fill="rgba(255,255,255,0.5)"/>
+        <rect x="2" y="10" width="6" height="6" rx="1.5" fill="rgba(255,255,255,0.5)"/>
+        <rect x="10" y="10" width="6" height="6" rx="1.5" fill="white"/>
+      </svg>
+    </div>
+    <span class="logo-name">Brellium</span>
+  </div>
+  <div class="header-meta">
+    <span class="sprint-label">Sprint Tracker</span>
+    <span class="date-badge">April 2026 · Updated 04/10</span>
+  </div>
+</header>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+
+  <!-- Departments & Owners -->
+  <div class="sidebar-section">
+    <div class="sidebar-label">Department</div>
+
+    <button class="filter-btn active" data-filter="status" data-value="all" onclick="setFilter('status','all')" id="all-goals-btn">
+      <span class="dot" style="background:var(--muted)"></span> All Sprint Goals
+      <span class="count" id="count-all" style="display:none"></span>
+    </button>
+
+    <button class="dept-row-btn" data-filter="dept" data-value="Sales" onclick="setFilter('dept','Sales')">
+      <span class="dept-row-name">Sales</span><span class="dept-row-owner">Justin Greenwald</span>
+    </button>
+    <button class="dept-row-btn" data-filter="dept" data-value="Marketing" onclick="setFilter('dept','Marketing')">
+      <span class="dept-row-name">Marketing</span><span class="dept-row-owner">Madison Waldvogel</span>
+    </button>
+    <button class="dept-row-btn" data-filter="dept" data-value="Product & Engineering" onclick="setFilter('dept','Product & Engineering')">
+      <span class="dept-row-name">Product & Eng</span><span class="dept-row-owner">Mitchell Mom</span>
+    </button>
+    <button class="dept-row-btn" data-filter="dept" data-value="Customer Deployment" onclick="setFilter('dept','Customer Deployment')">
+      <span class="dept-row-name">Customer Dep.</span><span class="dept-row-owner">Karina McDonough</span>
+    </button>
+    <button class="dept-row-btn" data-filter="dept" data-value="Partnerships" onclick="setFilter('dept','Partnerships')">
+      <span class="dept-row-name">Partnerships</span><span class="dept-row-owner">Zach Rosen</span>
+    </button>
+    <button class="dept-row-btn" data-filter="dept" data-value="People" onclick="setFilter('dept','People')">
+      <span class="dept-row-name">People</span><span class="dept-row-owner">Laurel Handler-Vosen</span>
+    </button>
+    <button class="dept-row-btn" data-filter="dept" data-value="Finance" onclick="setFilter('dept','Finance')">
+      <span class="dept-row-name">Finance</span><span class="dept-row-owner">Sid Jain</span>
+    </button>
+  </div>
+
+  <!-- Status Filters -->
+  <div class="sidebar-section">
+    <div class="sidebar-label">Status</div>
+    <button class="filter-btn" data-filter="status" data-value="green" onclick="setFilter('status','green')">
+      <span class="dot" style="background:var(--green)"></span> On Track
+      <span class="count" id="count-green"></span>
+    </button>
+    <button class="filter-btn" data-filter="status" data-value="amber" onclick="setFilter('status','amber')">
+      <span class="dot" style="background:var(--amber)"></span> At Risk
+      <span class="count" id="count-amber"></span>
+    </button>
+    <button class="filter-btn" data-filter="status" data-value="red" onclick="setFilter('status','red')">
+      <span class="dot" style="background:var(--red)"></span> Off Track
+      <span class="count" id="count-red"></span>
+    </button>
+    <button class="filter-btn" data-filter="status" data-value="complete" onclick="setFilter('status','complete')">
+      <span class="dot" style="background:#6366F1"></span> Complete
+      <span class="count" id="count-complete"></span>
+    </button>
+  </div>
+
+</aside>
+
+<!-- MAIN -->
+<main id="main-content">
+
+  <!-- OVERVIEW CONTEXT -->
+  <div class="overview-section">
+    <div class="overview-top">
+      <div class="overview-titles">
+        <div class="overview-title-row">
+          <h1 id="overview-h1">April 2026 Sprint</h1>
+          <span class="overview-owner-name" id="overview-owner" style="display:none"></span>
+          <div class="overview-period-block">
+            <span class="period-range">Apr 1 – Apr 30, 2026</span>
+            <span class="period-divider">·</span>
+            <span class="period-updated"><span class="period-updated-label">Updated</span> April 10, 2026</span>
+          </div>
+        </div>
+        <div class="dept-breakdown" id="dept-breakdown"></div>
+      </div>
+    </div>
+    <div class="overview-stats">
+      <div class="stat-item">
+        <span class="stat-label">Total Goals</span>
+        <span class="stat-value" id="stat-total"></span>
+        <span class="stat-sub" id="stat-total-sub">across 7 departments</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">On Track</span>
+        <span class="stat-value" style="color:var(--green)" id="stat-green"></span>
+        <span class="stat-sub" id="stat-green-pct"></span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">At Risk</span>
+        <span class="stat-value" style="color:var(--amber)" id="stat-amber"></span>
+        <span class="stat-sub" id="stat-amber-pct"></span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Off Track</span>
+        <span class="stat-value" style="color:var(--red)" id="stat-red"></span>
+        <span class="stat-sub" id="stat-red-pct"></span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">Complete</span>
+        <span class="stat-value" style="color:#818CF8" id="stat-complete"></span>
+        <span class="stat-sub" id="stat-complete-pct"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY BAR -->
+  <div class="summary-section">
+    <div class="summary-top">
+      <span class="summary-title">Sprint Overview</span>
+      <div class="summary-counts">
+        <span class="summary-count"><span class="dot" style="background:#6366F1"></span><span id="lbl-complete"></span> Complete</span>
+        <span class="summary-count"><span class="dot" style="background:var(--green)"></span><span id="lbl-green"></span> On Track</span>
+        <span class="summary-count"><span class="dot" style="background:var(--amber)"></span><span id="lbl-amber"></span> At Risk</span>
+        <span class="summary-count"><span class="dot" style="background:var(--red)"></span><span id="lbl-red"></span> Off Track</span>
+      </div>
+    </div>
+    <div class="bar-track">
+      <div class="bar-seg" id="bar-complete" style="background:#6366F1"></div>
+      <div class="bar-seg" id="bar-green"    style="background:var(--green)"></div>
+      <div class="bar-seg" id="bar-amber"    style="background:var(--amber)"></div>
+      <div class="bar-seg" id="bar-red"      style="background:var(--red)"></div>
+    </div>
+  </div>
+
+  <!-- GOAL CARDS rendered by JS -->
+  <div id="goals-container"></div>
+
+</main>
+</div>
+
+<script>
+const GOALS = [
+  // SALES
+  {
+    dept: "Sales",
+    owner: "Justin Greenwald",
+    target: "Add $800k ARR",
+    status: "204k",
+    rag: "amber",
+    narrative: "Closed $204k on 4 deals — 2 ABA, 1 Hospice, 1 BH."
+  },
+  {
+    dept: "Sales",
+    owner: "Justin Greenwald",
+    target: ">20% Close Rate",
+    status: "15%",
+    rag: "amber",
+    narrative: "Current projected close rate by EOM at 19% based on deals expected to close. Trending upward as deals progress. Close rate is being emphasized heavily in stand-ups and 1:1s."
+  },
+  {
+    dept: "Sales",
+    owner: "Justin Greenwald",
+    target: "Close 1 Payor",
+    status: "0",
+    rag: "red",
+    narrative: "Big focus this week is Catalight — group demo on Wednesday. Brian, Conor, and Justin doing multiple dry runs."
+  },
+  // MARKETING
+  {
+    dept: "Marketing",
+    owner: "Madison Waldvogel",
+    target: "Generate $4.5M in Pipeline",
+    status: "$1,209,160 (27%)",
+    rag: "green",
+    narrative: "Generated $1.2M / $4.5M (27%) of pipeline within the first full week of the quarter. Pacing strong to hit pipeline goal."
+  },
+  {
+    dept: "Marketing",
+    owner: "Madison Waldvogel",
+    target: "Increase SQO Qualification Rate 30% → 45%",
+    status: "42%",
+    rag: "amber",
+    narrative: "Generated 61 demos booked in April with 26 SQOs, putting us at a 42% CVR. Continuing to target top decision makers at Tier 1 accounts and re-engaging channel partners. Amber — positive trend toward 45% but not there yet."
+  },
+  {
+    dept: "Marketing",
+    owner: "Madison Waldvogel",
+    target: "Finish HubSpot Rearchitecture (ToFu, CS Renewals, Contract Economics, + Products)",
+    status: "4/12 scoped projects completed",
+    rag: "amber",
+    narrative: "Completed: Contract Economics, Deal Source Rename & Lead Source Consolidation, Sourcing Section & Attribution Fields, and Pipeline Consolidation. In Progress: Non-customer account dedupe, final contact deduping batches, and customer renewal workflow first pass."
+  },
+  {
+    dept: "Marketing",
+    owner: "Madison Waldvogel",
+    target: "Ship Repeatable Weekly Process for External Product Releases",
+    status: "Shipped 1 external launch; v1 process outlined",
+    rag: "green",
+    narrative: "External Launches: Worked with Product to highlight recent launches externally (shipped Email Efficacy). Aligned to ship new Dashboard, Audit Results, and Review Audit UI by EOM. Weekly Process: Outlined v1 alignment process between Marketing and Product on feature releases."
+  },
+  // PRODUCT & ENGINEERING
+  {
+    dept: "Product & Engineering",
+    owner: "Mitchell Mom",
+    target: "15 Customers Migrated to Cortex",
+    status: "1",
+    rag: "red",
+    narrative: "4 workstreams for Cortex: (1) Net new basic implementations, (2) Net new complex implementations w/ escalation, (3) Question edits/adds to existing sets, (4) Question sets for existing customers not originally on Cortex. Focus is workstream 3 (migrate as question set edits appear). Red — initial migration took longer than expected."
+  },
+  {
+    dept: "Product & Engineering",
+    owner: "Mitchell Mom",
+    target: "All ABA Question Sets Completable Through Cortex Without Escalations",
+    status: "25%",
+    rag: "red",
+    narrative: "95% of the way through first end-to-end implementation (Solstice BH) — audits available in Brellium, but not all criteria are live. Red — only 1 question set has a path to being done end-to-end at the moment."
+  },
+  {
+    dept: "Product & Engineering",
+    owner: "Mitchell Mom",
+    target: "5 Customers Migrated to Verified Users",
+    status: "0",
+    rag: "red",
+    narrative: "Red — initial work delayed as resources were diverted to Evals (post NPS survey). PRD presented to Post-Sales and Marketing; aligned on direction (Users → Email Builder → Observability). Technical spec and development starting this week."
+  },
+  // CUSTOMER DEPLOYMENT
+  {
+    dept: "Customer Deployment",
+    owner: "Karina McDonough",
+    target: "$50k Expand; $22k Churn",
+    status: "Churn $24k (92%); Expand $0 (0%) — $137k in pipeline",
+    rag: "red",
+    narrative: "Expand pipeline of $137k is promising but nothing closed yet. Churn is tracking slightly over target at $24k vs $22k goal."
+  },
+  {
+    dept: "Customer Deployment",
+    owner: "Karina McDonough",
+    target: "80% of Standard Implementations <30 Days; Non-Standard <60 Days",
+    status: "100% (1 implementation, 29.5 days)",
+    rag: "amber",
+    narrative: "Above target but data is limited — projected at 61% based on current revenue across stages. Next steps: maximize Q2 kickoffs to UAT in ~2 weeks and launch beginning-of-week pipeline standup focused on highest-value speed and quality actions."
+  },
+  {
+    dept: "Customer Deployment",
+    owner: "Karina McDonough",
+    target: "NPS >50",
+    status: "-62",
+    rag: "red",
+    narrative: "NPS live for 2 weeks with 63 responses (8 Decision Makers, 55 users). Biggest gap: zero responses from Champions. Next steps: leadership alignment on NPS interpretation and working through NPS action plan."
+  },
+  {
+    dept: "Customer Deployment",
+    owner: "Karina McDonough",
+    target: "Bug Resolution <3 Days; Question Set Resolution <14 Days",
+    status: "Bug: 17 hrs; Question Set: TBD",
+    rag: "green",
+    narrative: "Substantially exceeding bug resolution benchmark — based on 19 open and resolved tickets (8 involving missing audits). If pace continues, target may be tightened to 2 days. Still early in quarter."
+  },
+  // PARTNERSHIPS
+  {
+    dept: "Partnerships",
+    owner: "Zach Rosen",
+    target: "Outreach Completed to All Tier-1 Key Stakeholders",
+    status: "0%",
+    rag: "amber",
+    narrative: "Tier 1 partners defined. Investors activated and helping facilitate intros, leveraging existing customers. Next week will display denominator of total stakeholders and progress against the total."
+  },
+  {
+    dept: "Partnerships",
+    owner: "Zach Rosen",
+    target: "4 Tier-1 Meetings Booked",
+    status: "1",
+    rag: "amber",
+    narrative: "HCHB next meeting is April 14th. Alex Blake getting up to speed on partnerships landscape with focus on Tier 1 accounts."
+  },
+  {
+    dept: "Partnerships",
+    owner: "Zach Rosen",
+    target: "1 New Partner Agreement Signed",
+    status: "0",
+    rag: "amber",
+    narrative: "2 new EMR partnerships in active redlines (Healthie + Motivity)."
+  },
+  // PEOPLE
+  {
+    dept: "People",
+    owner: "Laurel Handler-Vosen",
+    target: "6 Roles Filled",
+    status: "0%",
+    rag: "amber",
+    narrative: "No hires made in Q2 yet. Teeing up to extend offer to Hiryana (SWE II) and two IA/CSA finalists early next week. AE role screens in progress; live coding sessions for Sr SWE and FDE early in the week."
+  },
+  {
+    dept: "People",
+    owner: "Laurel Handler-Vosen",
+    target: "≥90% Offer Acceptance Rate",
+    status: "0%",
+    rag: "red",
+    narrative: "Q2 offer extended to Sally Witwer (FDE) — Declined. Improvements underway: pre-close calls, pulling Zach into onsites for selling. Changes now in effect."
+  },
+  {
+    dept: "People",
+    owner: "Laurel Handler-Vosen",
+    target: "Ship 9-Box Across Company",
+    status: "50%",
+    rag: "green",
+    narrative: "Group level talent reviews complete. Progressing to top-level review next week with Zach and Henry."
+  },
+  // FINANCE
+  {
+    dept: "Finance",
+    owner: "Sid Jain",
+    target: "Ship First Month Close for Q1",
+    status: "100%",
+    rag: "complete",
+    narrative: "P&L shared with Zach and Henry. Slightly behind on account of: (1) time from contract signing to billing/rev rec timing, (2) higher hosting costs, (3) higher recruiting costs (likely 1x for management hiring in Q1)."
+  },
+  {
+    dept: "Finance",
+    owner: "Sid Jain",
+    target: "Ship Repeatable Process for Pricing & Non-Standard Contract Terms",
+    status: "25%",
+    rag: "amber",
+    narrative: "Establishing: (1) Pricing Calculator, (2) Rethinking ROI presentation to prospects, (3) Building contracting process library, (4) Retraining AEs on billing terms — pushing annual as default."
+  },
+  {
+    dept: "Finance",
+    owner: "Sid Jain",
+    target: "Outstanding AR >60 Days: $400k → $50k",
+    status: "10%",
+    rag: "red",
+    narrative: "Issue identified: significant AR never sent, no follow-up process, no reconciliation process. Working through Tabs to: (1) identify and reconcile all signed contracts (found Gentiva expansion and Grow Care — over $200k in missed invoices), (2) reach out to delinquent customers, (3) send outstanding invoices."
+  }
+];
+
+const DEPTS = [
+  { key: "Sales",                owner: "Justin Greenwald" },
+  { key: "Marketing",            owner: "Madison Waldvogel" },
+  { key: "Product & Engineering",owner: "Mitchell Mom" },
+  { key: "Customer Deployment",  owner: "Karina McDonough" },
+  { key: "Partnerships",         owner: "Zach Rosen" },
+  { key: "People",               owner: "Laurel Handler-Vosen" },
+  { key: "Finance",              owner: "Sid Jain" }
+];
+
+const RAG_LABELS = { green: "On Track", amber: "At Risk", red: "Off Track", complete: "Complete" };
+
+let activeFilter = { type: "status", value: "all" };
+
+function ragClass(rag) {
+  if (rag === "complete") return "green"; // style complete as green pill variant
+  return rag;
+}
+
+function ragLabel(rag) {
+  return RAG_LABELS[rag] || rag;
+}
+
+function buildCards() {
+  const container = document.getElementById("goals-container");
+  container.innerHTML = "";
+
+  DEPTS.forEach(dept => {
+    const deptGoals = GOALS.filter(g => g.dept === dept.key);
+
+    const section = document.createElement("div");
+    section.className = "dept-section";
+    section.dataset.dept = dept.key;
+
+    const titleRow = document.createElement("div");
+    titleRow.className = "dept-title-row";
+    titleRow.innerHTML = `
+      <span class="dept-title">${dept.key}</span>
+      <span class="dept-divider"></span>
+    `;
+    section.appendChild(titleRow);
+
+    const grid = document.createElement("div");
+    grid.className = "goals-grid";
+
+    deptGoals.forEach((g, i) => {
+      const card = document.createElement("div");
+      card.className = "goal-card";
+      card.dataset.dept = g.dept;
+      card.dataset.owner = g.owner;
+      card.dataset.rag = g.rag;
+      card.id = `card-${g.dept}-${i}`;
+
+      const pillClass = g.rag === "complete" ? "green" : g.rag;
+      const pillLabel = g.rag === "complete" ? "Complete" : RAG_LABELS[g.rag];
+      const pillStyle = g.rag === "complete" ? "background:rgba(99,102,241,0.15);color:#818CF8;" : "";
+
+      card.innerHTML = `
+        <div class="goal-top">
+          <div class="rag-pill ${pillClass}" style="${pillStyle}">
+            <span class="rag-dot"></span>${pillLabel}
+          </div>
+          <span class="goal-title">${g.target}</span>
+        </div>
+        <div class="goal-meta">
+          <div class="meta-item">
+            <span class="meta-label">Status (04/10)</span>
+            <span class="meta-value">${g.status}</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">Owner</span>
+            <span class="meta-value">${g.owner}</span>
+          </div>
+        </div>
+        <div class="goal-narrative">
+          <button class="narrative-toggle" onclick="toggleNarrative(this)">▸ View Narrative</button>
+          <div class="narrative-body">${g.narrative}</div>
+        </div>
+      `;
+
+      grid.appendChild(card);
+    });
+
+    section.appendChild(grid);
+    container.appendChild(section);
+  });
+}
+
+function toggleNarrative(btn) {
+  const body = btn.nextElementSibling;
+  const open = body.classList.toggle("open");
+  btn.textContent = open ? "▾ Hide Narrative" : "▸ View Narrative";
+}
+
+function setFilter(type, value) {
+  activeFilter = { type, value };
+  applyFilter();
+  updateSummary();
+
+  // update sidebar button states
+  document.querySelectorAll(".filter-btn").forEach(b => {
+    b.classList.toggle("active", b.dataset.filter === type && b.dataset.value === value);
+  });
+  document.querySelectorAll(".dept-row-btn").forEach(b => {
+    b.classList.toggle("active", b.dataset.filter === type && b.dataset.value === value);
+  });
+  // update dept chip active state
+  document.querySelectorAll(".dept-chip").forEach(c => {
+    c.classList.toggle("active", type === "dept" && c.dataset.dept === value);
+  });
+}
+
+function applyFilter() {
+  const { type, value } = activeFilter;
+
+  document.querySelectorAll(".goal-card").forEach(card => {
+    let show = true;
+    if (type === "status" && value !== "all") {
+      show = card.dataset.rag === value;
+    } else if (type === "dept") {
+      show = card.dataset.dept === value;
+    } else if (type === "owner") {
+      show = card.dataset.owner === value;
+    }
+    card.classList.toggle("hidden", !show);
+  });
+
+  // hide dept sections with no visible cards
+  document.querySelectorAll(".dept-section").forEach(section => {
+    const visible = [...section.querySelectorAll(".goal-card")].some(c => !c.classList.contains("hidden"));
+    section.classList.toggle("hidden", !visible);
+  });
+}
+
+function getVisibleGoals() {
+  const { type, value } = activeFilter;
+  if (type === "status" && value === "all") return GOALS;
+  if (type === "dept")   return GOALS.filter(g => g.dept  === value);
+  if (type === "owner")  return GOALS.filter(g => g.owner === value);
+  if (type === "status") return GOALS.filter(g => g.rag   === value);
+  return GOALS;
+}
+
+function updateSummary() {
+  const visible = getVisibleGoals();
+  const counts = { complete: 0, green: 0, amber: 0, red: 0 };
+  visible.forEach(g => { if (counts[g.rag] !== undefined) counts[g.rag]++; });
+  const total = visible.length;
+
+  // sidebar status counts always reflect full set
+  const allCounts = { complete: 0, green: 0, amber: 0, red: 0 };
+  GOALS.forEach(g => { if (allCounts[g.rag] !== undefined) allCounts[g.rag]++; });
+  document.getElementById("count-all").textContent = GOALS.length;
+  document.getElementById("count-green").textContent = allCounts.green;
+  document.getElementById("count-amber").textContent = allCounts.amber;
+  document.getElementById("count-red").textContent = allCounts.red;
+  document.getElementById("count-complete").textContent = allCounts.complete;
+
+  // summary bar legend counts → reflect visible subset
+  document.getElementById("lbl-complete").textContent = counts.complete;
+  document.getElementById("lbl-green").textContent = counts.green;
+  document.getElementById("lbl-amber").textContent = counts.amber;
+  document.getElementById("lbl-red").textContent = counts.red;
+
+  // overview heading + owner
+  const { type, value } = activeFilter;
+  const isDept = type === "dept";
+  const deptObj = isDept ? DEPTS.find(d => d.key === value) : null;
+  document.getElementById("overview-h1").textContent =
+    isDept ? value : "April 2026 Sprint";
+  const ownerEl = document.getElementById("overview-owner");
+  if (deptObj) {
+    ownerEl.textContent = deptObj.owner;
+    ownerEl.style.display = "inline";
+  } else {
+    ownerEl.style.display = "none";
+  }
+
+  // dept breakdown chips — build once, mark active
+  const breakdown = document.getElementById("dept-breakdown");
+  if (!breakdown.dataset.built) {
+    breakdown.innerHTML = "";
+    DEPTS.forEach(d => {
+      const n = GOALS.filter(g => g.dept === d.key).length;
+      const chip = document.createElement("button");
+      chip.className = "dept-chip";
+      chip.dataset.dept = d.key;
+      chip.innerHTML = `${d.key} <span class="dept-chip-count">${n}</span>`;
+      chip.onclick = () => {
+        // clicking the already-active chip resets to all
+        if (activeFilter.type === "dept" && activeFilter.value === d.key) {
+          setFilter("status", "all");
+        } else {
+          setFilter("dept", d.key);
+        }
+      };
+      breakdown.appendChild(chip);
+    });
+    breakdown.dataset.built = "1";
+  }
+  document.querySelectorAll(".dept-chip").forEach(c => {
+    c.classList.toggle("active", type === "dept" && c.dataset.dept === value);
+  });
+
+  // overview stat tiles → scoped to visible goals
+  const pctStr = v => total > 0 ? Math.round(v / total * 100) + "% of goals" : "—";
+  document.getElementById("stat-total").textContent = total;
+  document.getElementById("stat-total-sub").textContent =
+    isDept        ? `in 1 department` :
+    type === "owner" ? `for 1 owner` :
+    `across 7 departments`;
+  document.getElementById("stat-green").textContent = counts.green;
+  document.getElementById("stat-green-pct").textContent = pctStr(counts.green);
+  document.getElementById("stat-amber").textContent = counts.amber;
+  document.getElementById("stat-amber-pct").textContent = pctStr(counts.amber);
+  document.getElementById("stat-red").textContent = counts.red;
+  document.getElementById("stat-red-pct").textContent = pctStr(counts.red);
+  document.getElementById("stat-complete").textContent = counts.complete;
+  document.getElementById("stat-complete-pct").textContent = pctStr(counts.complete);
+
+  // proportional bar → scoped to visible goals
+  const pct = v => total > 0 ? (v / total * 100).toFixed(1) + "%" : "0%";
+  document.getElementById("bar-complete").style.width = pct(counts.complete);
+  document.getElementById("bar-green").style.width = pct(counts.green);
+  document.getElementById("bar-amber").style.width = pct(counts.amber);
+  document.getElementById("bar-red").style.width = pct(counts.red);
+
+  // summary bar label
+  document.querySelector(".summary-title").textContent =
+    isDept ? `${value} — Goal Status` : "Sprint Overview";
+}
+
+buildCards();
+updateSummary();
+applyFilter();
+</script>
+</body>
+</html>
