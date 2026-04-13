@@ -1,839 +1,494 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brellium · Sprint Goal Tracker</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Brellium — April 2026 Sprint</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet"/>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
   :root {
-    --bg: #190042;
-    --surface: #1f0052;
-    --surface2: #2a006a;
-    --surface3: #3D0399;
-    --border: rgba(161,104,255,0.2);
-    --border2: rgba(161,104,255,0.4);
-    --text: #f5f0ff;
-    --muted: #C9B0FF;
-    --subtle: #A168FF;
-    --green: #10B981;
-    --green-dim: #D1FAE5;
-    --green-border: rgba(16,185,129,0.5);
-    --yellow: #F59E0B;
-    --yellow-dim: #FEF3C7;
-    --yellow-border: rgba(245,158,11,0.5);
-    --red: #EF4444;
-    --red-dim: #FEE2E2;
-    --red-border: rgba(239,68,68,0.5);
-    --purple1: #EBE0FF;
-    --purple2: #C9B0FF;
-    --purple3: #A168FF;
-    --purple4: #6204FF;
-    --purple5: #3D0399;
-    --purple6: #190042;
-    --blue: #A168FF;
-    --blue-dim: rgba(161,104,255,0.15);
-    --accent: #EBE0FF;
-    --mono: 'DM Mono', monospace;
-    --serif: 'Instrument Serif', serif;
-    --sans: 'DM Sans', sans-serif;
+    --bg:      #190042;
+    --bg2:     #1f0052;
+    --card:    #240060;
+    --border:  rgba(161,104,255,0.18);
+    --accent:  #A168FF;
+    --muted:   #C9B0FF;
+    --text:    #EDE0FF;
+    --subtext: #B89FDD;
+    --green:   #10B981;
+    --amber:   #F59E0B;
+    --red:     #EF4444;
+    --green-bg: rgba(16,185,129,0.10);
+    --amber-bg: rgba(245,158,11,0.10);
+    --red-bg:   rgba(239,68,68,0.10);
   }
 
-  html { scroll-behavior: smooth; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
+  html, body {
+    width: 100%; height: 100%;
+    font-family: 'DM Sans', sans-serif;
     background: var(--bg);
     color: var(--text);
-    font-family: var(--sans);
-    font-size: 14px;
-    line-height: 1.6;
-    min-height: 100vh;
-    overflow-x: hidden;
+    overflow: hidden; /* no scroll on TV */
   }
 
   /* ── HEADER ── */
   header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(25,0,66,0.92);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(161,104,255,.2);
-    padding: 0 2rem;
-    height: 56px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 0 48px;
+    height: 76px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
   }
 
-  .wordmark {
-    font-family: var(--sans);
-    font-size: 18px;
-    font-weight: 500;
-    letter-spacing: 0.01em;
-    color: var(--text);
+  .logo {
     display: flex;
     align-items: center;
-    gap: 10px;
-  }
-  .wordmark-dot {
-    width: 7px; height: 7px;
-    border-radius: 50%;
-    background: var(--purple3);
-    animation: pulse 2.5s ease-in-out infinite;
-  }
-  @keyframes pulse {
-    0%,100%{opacity:1;transform:scale(1)}
-    50%{opacity:.4;transform:scale(.85)}
+    gap: 12px;
   }
 
-  .header-meta {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .stamp {
-    font-family: var(--sans);
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .sprint-badge {
-    font-family: var(--sans);
-    font-size: 10px;
-    font-weight: 500;
-    color: #EBE0FF;
-    background: rgba(98,4,255,.4);
-    border: 1px solid rgba(161,104,255,.5);
-    border-radius: 4px;
-    padding: 3px 8px;
-    text-transform: uppercase;
-  }
-
-  /* ── HERO ── */
-  .hero {
-    padding: 5rem 2rem 3rem;
-    max-width: 1100px;
-    margin: 0 auto;
-    opacity: 0;
-    transform: translateY(16px);
-    animation: fadeUp .6s ease forwards .1s;
-  }
-  .hero-eyebrow {
-    font-family: var(--sans);
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-  }
-  .hero-title {
-    font-family: var(--sans);
-    font-size: clamp(2.5rem, 5vw, 4rem);
-    font-weight: 400;
-    line-height: 1.1;
-    color: var(--text);
-    margin-bottom: .6rem;
-  }
-  .hero-sub {
-    font-size: 15px;
-    color: var(--muted);
-    font-weight: 300;
-    max-width: 480px;
-    margin-bottom: 2.5rem;
-  }
-
-  /* ── SUMMARY STRIP ── */
-  .summary-strip {
-    display: flex;
-    border: 1px solid rgba(161,104,255,.25);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 3rem;
-    position: relative;
-  }
-  .summary-cell {
-    background: rgba(31,0,82,0.85);
-    padding: 1.4rem 1.5rem;
-    position: relative;
-    transition: flex .6s cubic-bezier(.4,0,.2,1);
-    border-right: 1px solid rgba(161,104,255,.15);
-    overflow: hidden;
-    min-width: 0;
-  }
-  .summary-cell:last-child { border-right: none; }
-  .summary-cell::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-  }
-  .summary-cell.green::before  { background: var(--green); }
-  .summary-cell.yellow::before { background: var(--yellow); }
-  .summary-cell.red::before    { background: var(--red); }
-  .summary-cell.blue::before   { background: var(--purple3); }
-  .summary-cell::after { content:''; position:absolute; inset:0; opacity:.06; pointer-events:none; }
-  .summary-cell.green::after  { background: var(--green); }
-  .summary-cell.yellow::after { background: var(--yellow); }
-  .summary-cell.red::after    { background: var(--red); }
-  .summary-cell.blue::after   { background: var(--purple3); }
-
-  .summary-num {
-    font-family: var(--sans);
-    font-size: 2.8rem;
-    line-height: 1;
-    margin-bottom: .25rem;
-    position: relative; z-index: 1;
-  }
-  .summary-label { position: relative; z-index: 1; }
-  .summary-pct { font-size: 10px; font-weight: 500; color: var(--subtle); margin-top: 4px; position: relative; z-index: 1; }
-  .summary-cell.green .summary-num { color: #10B981; }
-  .summary-cell.yellow .summary-num { color: #F59E0B; }
-  .summary-cell.red .summary-num { color: #EF4444; }
-  .summary-cell.blue .summary-num { color: var(--purple3); }
-
-  .summary-label {
-    font-size: 12px;
-    color: var(--muted);
-    font-weight: 300;
-    letter-spacing: .02em;
-  }
-
-  /* ── LAYOUT ── */
-  .main-layout {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 2rem 4rem;
-    display: grid;
-    grid-template-columns: 220px 1fr;
-    gap: 2rem;
-    align-items: start;
-  }
-
-  /* ── SIDEBAR ── */
-  .sidebar {
-    position: sticky;
-    top: 72px;
-    opacity: 0;
-    animation: fadeUp .6s ease forwards .2s;
-  }
-  .sidebar-section {
-    margin-bottom: 2rem;
-  }
-  .sidebar-heading {
-    font-family: var(--sans);
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--subtle);
-    text-transform: uppercase;
-    margin-bottom: .75rem;
-    padding-bottom: .5rem;
-    border-bottom: 1px solid rgba(161,104,255,.2);
-  }
-  .filter-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    background: none;
-    border: none;
-    padding: .45rem .6rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: var(--sans);
-    font-size: 13px;
-    color: var(--muted);
-    text-align: left;
-    transition: background .15s, color .15s;
-    margin-bottom: 2px;
-  }
-  .filter-btn:hover { background: rgba(161,104,255,.15); color: var(--text); }
-  .filter-btn.active { background: rgba(98,4,255,.35); color: var(--text); }
-
-  .filter-count {
-    margin-left: auto;
-    font-family: var(--sans);
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--subtle);
-  }
-
-  .status-filter {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  .status-btn {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    background: none;
-    border: none;
-    padding: .4rem .6rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: var(--sans);
-    font-size: 13px;
-    color: var(--muted);
-    text-align: left;
-    transition: background .15s, color .15s;
-  }
-  .status-btn:hover { background: rgba(161,104,255,.15); color: var(--text); }
-  .status-btn.active { background: rgba(98,4,255,.35); color: var(--text); }
-  .status-dot {
-    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
-  }
-
-  /* ── CONTENT ── */
-  .content {
-    opacity: 0;
-    animation: fadeUp .6s ease forwards .3s;
-  }
-
-  /* Chart block */
-  .chart-block {
-    background: rgba(31,0,82,0.8);
-    border: 1px solid rgba(161,104,255,.2);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-  }
-  .block-label {
-    font-family: var(--sans);
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-  }
-
-  /* Owner groups */
-  .owner-group {
-    margin-bottom: 2rem;
-  }
-  .owner-header {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: .75rem;
-    padding-bottom: .75rem;
-    border-bottom: 1px solid rgba(161,104,255,.2);
-  }
-
-  .owner-name {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--text);
-  }
-  .owner-role {
-    font-size: 11px;
-    color: var(--muted);
-    font-weight: 300;
-  }
-  .owner-tally {
-    margin-left: auto;
-    display: flex;
-    gap: 6px;
-  }
-  .tally-pip {
-    width: 6px; height: 6px; border-radius: 50%;
-  }
-
-  /* Target cards grid */
-  .targets-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-  }
-
-  .target-card {
-    background: rgba(31,0,82,0.7);
-    border: 1px solid rgba(161,104,255,.2);
+  .logo-mark {
+    width: 38px; height: 38px;
+    background: var(--accent);
     border-radius: 10px;
-    padding: 1rem 1.1rem;
-    transition: border-color .2s, background .2s;
-    cursor: default;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .logo-mark svg { width: 22px; height: 22px; }
+
+  .logo-name {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.4px;
+    color: #fff;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .header-sprint {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: -0.2px;
+  }
+
+  .header-divider { color: var(--border); font-size: 18px; }
+
+  .header-updated {
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--subtext);
+  }
+
+  .header-updated strong {
+    font-weight: 600;
+    color: var(--muted);
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .page {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    height: calc(100vh - 76px);
+    padding: 28px 48px 24px;
+    gap: 24px;
   }
-  .target-card:hover {
-    background: rgba(161,104,255,.1);
-    border-color: rgba(161,104,255,.35);
-  }
-  .target-card.hidden { display: none; }
 
-  .card-top {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 8px;
+  /* ── TOP STATS ROW ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    flex-shrink: 0;
   }
-  .target-title {
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.9px;
+    text-transform: uppercase;
+    color: var(--subtext);
+  }
+
+  .stat-value {
+    font-size: 44px;
+    font-weight: 700;
+    letter-spacing: -1px;
+    line-height: 1;
+    color: #fff;
+  }
+
+  .stat-sub {
     font-size: 13px;
-    font-weight: 400;
-    color: var(--text);
-    line-height: 1.4;
+    color: var(--subtext);
+    margin-top: 2px;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .bar-wrap { flex-shrink: 0; }
+
+  .bar-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .bar-title {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--subtext);
+  }
+
+  .bar-legend {
+    display: flex;
+    gap: 20px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+  }
+
+  .bar-track {
+    height: 14px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 99px;
+    overflow: hidden;
+    display: flex;
+  }
+
+  .bar-seg { height: 100%; transition: width 0.8s ease; }
+
+  /* ── DEPT GRID ── */
+  .dept-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 14px;
+    flex: 1;
+    min-height: 0;
+  }
+
+  .dept-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    overflow: hidden;
+    cursor: pointer;
+    transition: border-color 0.2s, transform 0.15s;
+    text-decoration: none;
+  }
+
+  .dept-card:hover {
+    border-color: rgba(161,104,255,0.4);
+    transform: translateY(-2px);
+  }
+
+  .dept-card-top {
+    margin-bottom: 14px;
+  }
+
+  .dept-name {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--subtext);
+    margin-bottom: 4px;
+  }
+
+  .dept-owner {
+    font-size: 17px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.3px;
+    line-height: 1.2;
+  }
+
+  .dept-goal-count {
+    font-size: 12px;
+    color: var(--subtext);
+    margin-top: 4px;
+  }
+
+  /* mini rag bar */
+  .dept-bar {
+    height: 6px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 99px;
+    overflow: hidden;
+    display: flex;
+    margin-bottom: 14px;
+  }
+
+  .dept-bar-seg { height: 100%; }
+
+  /* rag pills list */
+  .dept-rags {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
     flex: 1;
   }
-  .status-tag {
-    font-family: var(--sans);
-    font-size: 10px;
-    font-weight: 500;
-    padding: 2px 7px;
-    border-radius: 4px;
-    white-space: nowrap;
-    flex-shrink: 0;
-      }
-  .tag-green { background: rgba(16,185,129,0.15); color: #10B981; border: 1px solid rgba(16,185,129,0.4); }
-  .tag-yellow { background: rgba(245,158,11,0.15); color: #F59E0B; border: 1px solid rgba(245,158,11,0.4); }
-  .tag-red { background: rgba(239,68,68,0.15); color: #EF4444; border: 1px solid rgba(239,68,68,0.4); }
 
-  .card-status-val {
-    font-family: var(--sans);
-    font-size: 12px;
-    color: var(--text);
-    font-weight: 500;
-  }
-
-  .progress-track {
-    height: 3px;
-    background: rgba(161,104,255,.2);
-    border-radius: 2px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    border-radius: 2px;
-    transition: width .6s ease;
-  }
-
-  .card-narrative {
-    font-size: 12px;
-    color: var(--muted);
-    font-weight: 300;
-    line-height: 1.55;
-    max-height: 52px;
-    overflow: hidden;
-    position: relative;
-    transition: max-height .3s ease;
-  }
-  .card-narrative.open { max-height: 300px; }
-  .card-narrative:not(.open)::after {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0; right: 0;
-    height: 24px;
-    background: linear-gradient(transparent, #1f0052);
-  }
-  .target-card:hover .card-narrative:not(.open)::after {
-    background: linear-gradient(transparent, rgba(42,0,106,.95));
-  }
-  .expand-btn {
-    font-family: var(--sans);
-    font-size: 10px;
-    color: var(--muted);
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 0;
-    transition: color .15s;
-    align-self: flex-start;
-  }
-  .expand-btn:hover { color: #EBE0FF; }
-
-  /* ── FOOTER ── */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 1.5rem 2rem;
+  .dept-rag-row {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 1100px;
-    margin: 0 auto;
+    gap: 8px;
   }
-  .footer-note {
-    font-family: var(--sans);
-    font-size: 11px;
+
+  .dept-rag-label {
+    font-size: 12px;
+    color: var(--subtext);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .dept-rag-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .dept-rag-count {
+    font-size: 15px;
+    font-weight: 700;
     color: var(--muted);
   }
 
-  /* ── ANIM ── */
-  @keyframes fadeUp {
-    to { opacity: 1; transform: translateY(0); }
+  .dept-divider-line {
+    height: 1px;
+    background: var(--border);
+    margin: 10px 0;
   }
 
-  /* ── RESPONSIVE ── */
-  @media (max-width: 768px) {
-    .main-layout { grid-template-columns: 1fr; }
-    .sidebar { position: static; }
-    .targets-grid { grid-template-columns: 1fr; }
-    .summary-strip { flex-wrap: wrap; }
-    .summary-cell { min-width: 50%; }
-    .hero { padding: 3rem 1.5rem 2rem; }
-    header { padding: 0 1.5rem; }
+  .view-detail {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    letter-spacing: 0.4px;
+    margin-top: auto;
+    padding-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
   }
-
-  /* scrollbar */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--subtle); border-radius: 3px; }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="wordmark">
-    <div class="wordmark-dot"></div>
-    Brellium
+  <div class="logo">
+    <span class="logo-name">Brellium</span>
   </div>
-  <div class="header-meta">
-    <span class="stamp">Updated 04/10/2026</span>
-    <span class="sprint-badge">April Sprint</span>
+  <div class="header-right">
+    <span class="header-sprint">April 2026 Sprint</span>
+    <span class="header-divider">·</span>
+    <span class="header-updated"><strong>Updated</strong> April 10, 2026</span>
   </div>
 </header>
 
-<section class="hero">
-  <p class="hero-eyebrow">Q2 · April 2026 Sprint</p>
-  <h1 class="hero-title">Sprint<br>Goal Tracker</h1>
-  <p class="hero-sub">22 sprint goals across 7 owners. Status as of April 10, 2026.</p>
+<div class="page">
 
-  <div class="summary-strip" id="summaryStrip">
-    <div class="summary-cell blue" id="cell-blue">
-      <div class="summary-num" id="cnt-blue">1</div>
-      <div class="summary-label">Complete</div>
-      <div class="summary-pct" id="pct-blue"></div>
+  <!-- STATS ROW -->
+  <div class="stats-row" id="stats-row"></div>
+
+  <!-- PROGRESS BAR -->
+  <div class="bar-wrap">
+    <div class="bar-label-row">
+      <span class="bar-title">Sprint Progress</span>
+      <div class="bar-legend">
+        <span class="legend-item"><span class="legend-dot" style="background:#6366F1"></span>Complete</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>On Track</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span>At Risk</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>Off Track</span>
+      </div>
     </div>
-    <div class="summary-cell green" id="cell-green">
-      <div class="summary-num" id="cnt-green">6</div>
-      <div class="summary-label">On track</div>
-      <div class="summary-pct" id="pct-green"></div>
-    </div>
-    <div class="summary-cell yellow" id="cell-yellow">
-      <div class="summary-num" id="cnt-yellow">8</div>
-      <div class="summary-label">At risk</div>
-      <div class="summary-pct" id="pct-yellow"></div>
-    </div>
-    <div class="summary-cell red" id="cell-red">
-      <div class="summary-num" id="cnt-red">7</div>
-      <div class="summary-label">Off track</div>
-      <div class="summary-pct" id="pct-red"></div>
-    </div>
+    <div class="bar-track" id="bar-track"></div>
   </div>
-</section>
 
-<div class="main-layout">
+  <!-- DEPT GRID -->
+  <div class="dept-grid" id="dept-grid"></div>
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-section">
-      <div class="sidebar-heading">Filter by owner</div>
-      <div id="owner-filters"></div>
-    </div>
-    <div class="sidebar-section">
-      <div class="sidebar-heading">Filter by status</div>
-      <div class="status-filter">
-        <button class="status-btn active" data-status="all" onclick="filterStatus('all',this)">
-          <span class="status-dot" style="background:var(--muted)"></span> All statuses
-        </button>
-        <button class="status-btn" data-status="complete" onclick="filterStatus('complete',this)">
-          <span class="status-dot" style="background:var(--purple3)"></span> Complete
-        </button>
-        <button class="status-btn" data-status="green" onclick="filterStatus('green',this)">
-          <span class="status-dot" style="background:var(--green)"></span> On track
-        </button>
-        <button class="status-btn" data-status="yellow" onclick="filterStatus('yellow',this)">
-          <span class="status-dot" style="background:var(--yellow)"></span> At risk
-        </button>
-        <button class="status-btn" data-status="red" onclick="filterStatus('red',this)">
-          <span class="status-dot" style="background:var(--red)"></span> Off track
-        </button>
-      </div>
-    </div>
-  </aside>
-
-  <!-- CONTENT -->
-  <main class="content">
-
-    <!-- Progress chart -->
-    <div class="chart-block">
-      <div class="block-label">Progress overview · all sprint goals</div>
-      <div style="position:relative;width:100%;height:380px">
-        <canvas id="progressChart" role="img" aria-label="Horizontal bar chart of sprint goal progress percentages">Sprint targets progress overview.</canvas>
-      </div>
-    </div>
-
-    <!-- Target cards -->
-    <div id="cards-container"></div>
-
-  </main>
 </div>
 
-<footer>
-  <span class="footer-note">Brellium · Sprint Goal Tracker · Confidential</span>
-  <span class="footer-note">22 sprint goals · 7 DRIs</span>
-</footer>
-
 <script>
-const OWNERS = [
-  {name:"Sales",                 owner:"Justin Greenwald",     color:"#EBE0FF", bg:"rgba(98,4,255,.25)"},
-  {name:"Marketing",             owner:"Madison Waldvogel",    color:"#C9B0FF", bg:"rgba(61,3,153,.35)"},
-  {name:"Product & Engineering", owner:"Mitchell Mom",         color:"#EBE0FF", bg:"rgba(98,4,255,.2)"},
-  {name:"Customer Deployment",   owner:"Karina McDonough",     color:"#C9B0FF", bg:"rgba(161,104,255,.2)"},
-  {name:"Partnerships",          owner:"Zach Rosen",           color:"#EBE0FF", bg:"rgba(161,104,255,.25)"},
-  {name:"People",                owner:"Laurel Handler-Vosen", color:"#EBE0FF", bg:"rgba(61,3,153,.3)"},
-  {name:"Finance",               owner:"Sid Jain",             color:"#C9B0FF", bg:"rgba(98,4,255,.25)"},
+const GOALS = [
+  { dept: "Sales",                owner: "Justin Greenwald",     target: "Add $800k ARR",                                                            rag: "amber" },
+  { dept: "Sales",                owner: "Justin Greenwald",     target: ">20% Close Rate",                                                          rag: "amber" },
+  { dept: "Sales",                owner: "Justin Greenwald",     target: "Close 1 Payor",                                                            rag: "red"   },
+  { dept: "Marketing",            owner: "Madison Waldvogel",    target: "Generate $4.5M in Pipeline",                                               rag: "green" },
+  { dept: "Marketing",            owner: "Madison Waldvogel",    target: "Increase SQO Qualification Rate 30% → 45%",                                rag: "amber" },
+  { dept: "Marketing",            owner: "Madison Waldvogel",    target: "Finish HubSpot Rearchitecture",                                            rag: "amber" },
+  { dept: "Marketing",            owner: "Madison Waldvogel",    target: "Ship Repeatable Weekly Process for External Product Releases",              rag: "green" },
+  { dept: "Product & Engineering",owner: "Mitchell Mom",         target: "15 Customers Migrated to Cortex",                                          rag: "red"   },
+  { dept: "Product & Engineering",owner: "Mitchell Mom",         target: "All ABA Question Sets Through Cortex Without Escalations",                 rag: "red"   },
+  { dept: "Product & Engineering",owner: "Mitchell Mom",         target: "5 Customers Migrated to Verified Users",                                   rag: "red"   },
+  { dept: "Customer Deployment",  owner: "Karina McDonough",     target: "$50k Expand; $22k Churn",                                                  rag: "red"   },
+  { dept: "Customer Deployment",  owner: "Karina McDonough",     target: "80% of Standard Implementations <30 Days",                                 rag: "amber" },
+  { dept: "Customer Deployment",  owner: "Karina McDonough",     target: "NPS >50",                                                                  rag: "red"   },
+  { dept: "Customer Deployment",  owner: "Karina McDonough",     target: "Bug Resolution <3 Days",                                                   rag: "green" },
+  { dept: "Partnerships",         owner: "Zach Rosen",           target: "Outreach to All Tier-1 Key Stakeholders",                                  rag: "amber" },
+  { dept: "Partnerships",         owner: "Zach Rosen",           target: "4 Tier-1 Meetings Booked",                                                 rag: "amber" },
+  { dept: "Partnerships",         owner: "Zach Rosen",           target: "1 New Partner Agreement Signed",                                           rag: "amber" },
+  { dept: "People",               owner: "Laurel Handler-Vosen", target: "6 Roles Filled",                                                           rag: "amber" },
+  { dept: "People",               owner: "Laurel Handler-Vosen", target: "≥90% Offer Acceptance Rate",                                               rag: "red"   },
+  { dept: "People",               owner: "Laurel Handler-Vosen", target: "Ship 9-Box Across Company",                                                rag: "green" },
+  { dept: "Finance",              owner: "Sid Jain",             target: "Ship First Month Close for Q1",                                            rag: "complete"},
+  { dept: "Finance",              owner: "Sid Jain",             target: "Ship Repeatable Process for Pricing & Non-Standard Contract Terms",         rag: "amber" },
+  { dept: "Finance",              owner: "Sid Jain",             target: "Outstanding AR >60 Days: $400k → $50k",                                    rag: "red"   },
 ];
 
-const TARGETS = [
-  {dri:"Sales",   title:"Add 800k ARR",                         status:"$204k closed",            pct:26,  flag:"yellow", narrative:"Closed $204k on 4 deals: 2 ABA, 1 Hospice, 1 BH. 19% projected close rate by EOM — being emphasized in stand-ups and 1:1s."},
-  {dri:"Sales",   title:"Close rate >20%",                       status:"15% current",             pct:75,  flag:"yellow", narrative:"Projected close rate by EOM at 19% based on expected closures. Trending upward as deals progress throughout the month."},
-  {dri:"Sales",   title:"Close 1 payor",                         status:"0 closed",                pct:5,   flag:"red",    narrative:"Big focus this week is Catalight — large group demo Wednesday with multiple dry runs planned."},
-  {dri:"Marketing",  title:"Generate $4.5M in pipeline",            status:"$1.2M (27%)",             pct:27,  flag:"green",  narrative:"Generated $1.2M / $4.5M in the first full week of Q2. Pacing strong to hit the pipeline goal for the quarter."},
-  {dri:"Marketing",  title:"SQO qualification rate 30% → 45%",      status:"42%",                     pct:80,  flag:"yellow", narrative:"61 demos booked, 26 SQOs at 42% CVR. BDRs focused on tier-1 decision makers and re-engaging channel partners to improve SQL conversion."},
-  {dri:"Marketing",  title:"HubSpot rearchitecture",                status:"4/12 projects done",      pct:33,  flag:"yellow", narrative:"Completed: Contract Economics, Deal Source Rename, Sourcing Fields, and Pipeline Consolidation. Non-customer dedupe in progress."},
-  {dri:"Marketing",  title:"Repeatable external release process",   status:"1 launch shipped",        pct:50,  flag:"green",  narrative:"Shipped Email Efficacy launch. Aligned to release Dashboard, Audit Results, and Review Audit UI by EOM. v1 process outlined."},
-  {dri:"Product & Engineering",       title:"15 customers migrated to Cortex",       status:"1 migrated",              pct:7,   flag:"red",    narrative:"Focus shifted to workstream 3 (migrate as question set edits appear). Initial migration took longer than expected."},
-  {dri:"Product & Engineering",       title:"All ABA question sets via Cortex",      status:"25% complete",            pct:25,  flag:"red",    narrative:"95% through first end-to-end implementation (Solstice BH). Only 1 question set has a path to full completion currently."},
-  {dri:"Product & Engineering",       title:"5 customers → Verified Users",          status:"0 migrated",              pct:5,   flag:"red",    narrative:"Delayed as resources diverted to Evals post-NPS survey. PRD presented; technical spec and development starting this week."},
-  {dri:"Customer Deployment",   title:"$50k expand / $22k churn",              status:"Expand $0 · Churn $24k",  pct:10,  flag:"red",    narrative:"Expand at 0% to goal with $137k in pipeline. Resources redirected to post-NPS Evals work caused initial delay."},
-  {dri:"Customer Deployment",   title:"80% implementations <30 / <60 days",   status:"100% (1 impl · 29.5d)",   pct:70,  flag:"yellow", narrative:"Above target but data is limited — at 61% based on projected current revenue. Maximizing Q2 kickoffs to reach UAT in ~2 weeks."},
-  {dri:"Customer Deployment",   title:"NPS >50",                               status:"–62 current",             pct:0,   flag:"red",    narrative:"63 responses over 2 weeks; 8 DMs, 55 users, zero Champions. Leadership alignment meeting requested for April 13."},
-  {dri:"Customer Deployment",   title:"Bug resolution <3 days",                status:"17 hrs avg",              pct:100, flag:"green",  narrative:"Substantially exceeding benchmark based on 19 tickets. May reduce target to 2 days if trend continues through April."},
-  {dri:"People",title:"6 roles filled",                       status:"0 hires",                 pct:5,   flag:"red",    narrative:"Teeing up offers for Hiryana (SWE II) and 2 IA/CSA finalists. AE screens and SWE live coding sessions early next week."},
-  {dri:"People",title:"≥90% offer acceptance",               status:"0% (1 decline)",          pct:0,   flag:"red",    narrative:"Sally Witwer (FDE) declined. Improving SWE recruiting with pre-close calls and Zach joining onsites for selling."},
-  {dri:"People",title:"Ship 9-box across company",            status:"50% complete",            pct:50,  flag:"yellow", narrative:"Group-level talent reviews complete. Progressing to top-level review with Zach and Henry next week."},
-  {dri:"Finance",           title:"Ship Q1 month close",                   status:"100% — shipped",          pct:100, flag:"green",  narrative:"P&L shared with Zach and Henry. Slightly behind due to billing timing, higher hosting, and one-time recruiting costs."},
-  {dri:"Finance",           title:"Repeatable pricing process",            status:"25%",                     pct:25,  flag:"yellow", narrative:"Building pricing calculator, ROI presentation, contract library, and retraining AEs on billing terms (pushing annual)."},
-  {dri:"Finance",           title:"AR >60 days: $400k → $50k",            status:"10%",                     pct:10,  flag:"red",    narrative:"Found significant AR never sent and $200k+ in missed invoices (Gentiva, Grow Care). Reconciling via Tabs and sending past-due invoices."},
-  {dri:"Partnerships",         title:"Outreach to all Tier-1 stakeholders",  status:"0 completed",             pct:10,  flag:"yellow", narrative:"Tier-1 partners defined. Investors activated for introductions. Denominator and progress tracking will be shown next week."},
-  {dri:"Partnerships",         title:"4 Tier-1 meetings booked",              status:"1 booked",                pct:25,  flag:"yellow", narrative:"HCHB next meeting April 14. Alex Blake getting up to speed on partnerships landscape focusing on Tier-1 accounts."},
-  {dri:"Partnerships",         title:"1 new partner agreement signed",        status:"0 signed",                pct:15,  flag:"yellow", narrative:"2 EMR partnerships in active redlines: Healthie and Motivity."},
+const DEPTS = [
+  { key: "Sales",                 owner: "Justin Greenwald"     },
+  { key: "Marketing",             owner: "Madison Waldvogel"    },
+  { key: "Product & Engineering", owner: "Mitchell Mom"         },
+  { key: "Customer Deployment",   owner: "Karina McDonough"     },
+  { key: "Partnerships",          owner: "Zach Rosen"           },
+  { key: "People",                owner: "Laurel Handler-Vosen" },
+  { key: "Finance",               owner: "Sid Jain"             },
 ];
 
-const FLAG_COLOR = { green:"#10B981", yellow:"#F59E0B", red:"#EF4444" };
-const FLAG_LABEL = { green:"On track", yellow:"At risk", red:"Off track" };
+const RAG_COLOR = {
+  complete: "#6366F1",
+  green:    "#10B981",
+  amber:    "#F59E0B",
+  red:      "#EF4444",
+};
 
-function ownerMeta(name){ return OWNERS.find(o=>o.name===name)||{owner:"",color:"#888",bg:"rgba(128,128,128,.15)"}; }
+const RAG_BG = {
+  complete: "rgba(99,102,241,0.12)",
+  green:    "rgba(16,185,129,0.10)",
+  amber:    "rgba(245,158,11,0.10)",
+  red:      "rgba(239,68,68,0.10)",
+};
 
-// State
-let activeOwner = "All";
-let activeStatus = "all";
-let chartInstance = null;
-
-// ── OWNER SELECTION (shared by sidebar, card headers, chart click) ──
-function selectOwner(name) {
-  activeOwner = name;
-
-  // Sync sidebar buttons
-  document.querySelectorAll("#owner-filters .filter-btn").forEach(b => {
-    b.classList.toggle("active", b.dataset.owner === name);
-  });
-
-  renderAll();
-  updateChart();
+function countByRag(goals) {
+  const c = { complete: 0, green: 0, amber: 0, red: 0 };
+  goals.forEach(g => { if (c[g.rag] !== undefined) c[g.rag]++; });
+  return c;
 }
 
-// Build sidebar owner filters
-function buildOwnerFilters() {
-  const el = document.getElementById("owner-filters");
-  const allBtn = document.createElement("button");
-  allBtn.className = "filter-btn active";
-  allBtn.dataset.owner = "All";
-  allBtn.innerHTML = `<span style="font-size:12px;width:22px;text-align:center">·</span> All Sprint Goals <span class="filter-count">${TARGETS.length}</span>`;
-  allBtn.onclick = () => selectOwner("All");
-  el.appendChild(allBtn);
+function renderStats() {
+  const c = countByRag(GOALS);
+  const total = GOALS.length;
+  const pct = v => total ? Math.round(v / total * 100) + "%" : "—";
 
-  OWNERS.forEach(o => {
-    const count = TARGETS.filter(t=>t.dri===o.name).length;
-    const btn = document.createElement("button");
-    btn.className = "filter-btn";
-    btn.dataset.owner = o.name;
-    btn.innerHTML = `${o.name} <span class="filter-count">${count}</span>`;
-    btn.onclick = () => selectOwner(o.name);
-    el.appendChild(btn);
-  });
+  const items = [
+    { label: "Total Goals",  value: total,         sub: "across 7 departments", color: "#fff"      },
+    { label: "Complete",     value: c.complete,     sub: pct(c.complete),        color: "#6366F1"   },
+    { label: "On Track",     value: c.green,        sub: pct(c.green),           color: "#10B981"   },
+    { label: "At Risk",      value: c.amber,        sub: pct(c.amber),           color: "#F59E0B"   },
+    { label: "Off Track",    value: c.red,          sub: pct(c.red),             color: "#EF4444"   },
+  ];
+
+  document.getElementById("stats-row").innerHTML = items.map(i => `
+    <div class="stat-card">
+      <span class="stat-label">${i.label}</span>
+      <span class="stat-value" style="color:${i.color}">${i.value}</span>
+      <span class="stat-sub">${i.sub}</span>
+    </div>
+  `).join("");
 }
 
-function filterStatus(s, btn) {
-  activeStatus = s;
-  document.querySelectorAll(".status-btn").forEach(b=>b.classList.remove("active"));
-  btn.classList.add("active");
-  renderAll();
-  updateChart();
+function renderBar() {
+  const c = countByRag(GOALS);
+  const total = GOALS.length;
+  const pct = v => (v / total * 100).toFixed(1) + "%";
+  document.getElementById("bar-track").innerHTML = `
+    <div class="bar-seg" style="background:#6366F1;width:${pct(c.complete)}"></div>
+    <div class="bar-seg" style="background:#10B981;width:${pct(c.green)}"></div>
+    <div class="bar-seg" style="background:#F59E0B;width:${pct(c.amber)}"></div>
+    <div class="bar-seg" style="background:#EF4444;width:${pct(c.red)}"></div>
+  `;
 }
 
-// Render cards
-function renderAll() {
-  const container = document.getElementById("cards-container");
-  container.innerHTML = "";
+function renderDepts() {
+  const grid = document.getElementById("dept-grid");
+  grid.innerHTML = "";
 
-  const ownerOrder = OWNERS.map(o=>o.name);
-  ownerOrder.forEach(dri => {
-    if (activeOwner !== "All" && activeOwner !== dri) return;
-    const items = TARGETS.filter(t => t.dri===dri &&
-      (activeStatus==="all" ||
-       (activeStatus==="complete" && t.pct===100) ||
-       (activeStatus!=="complete" && t.flag===activeStatus && t.pct!==100)));
-    if (!items.length) return;
+  DEPTS.forEach(dept => {
+    const goals = GOALS.filter(g => g.dept === dept.key);
+    const c = countByRag(goals);
+    const total = goals.length;
+    const pct = v => (v / total * 100).toFixed(1) + "%";
 
-    const meta = ownerMeta(dri);
-    const group = document.createElement("div");
-    group.className = "owner-group";
+    const card = document.createElement("a");
+    card.className = "dept-card";
+    card.href = `dashboard.html`;
 
-    const flags = items.map(i=>i.flag);
-    const pips = flags.map(f=>`<span class="tally-pip" style="background:${FLAG_COLOR[f]}"></span>`).join("");
-
-    const isFiltered = activeOwner === dri;
-    group.innerHTML = `
-      <div class="owner-header">
-        <div>
-          <div class="owner-name owner-name-link" data-owner="${dri}" title="Click to filter by ${dri}" style="cursor:pointer;border-bottom:1px dashed rgba(255,255,255,0.2);display:inline-block;padding-bottom:1px;transition:border-color .15s,color .15s">${dri}</div>
-          <div class="owner-role">${meta.owner}</div>
-        </div>
-        <div class="owner-tally" style="display:flex;align-items:center;gap:6px">
-          ${pips}
-          ${isFiltered ? `<button onclick="selectOwner('All')" style="margin-left:8px;font-family:'DM Sans',sans-serif;font-size:10px;color:var(--muted);background:rgba(98,4,255,.3);border:1px solid rgba(161,104,255,.4);border-radius:4px;padding:2px 8px;cursor:pointer">× clear</button>` : ''}
-        </div>
+    const ragRows = [
+      { key: "complete", label: "Complete" },
+      { key: "green",    label: "On Track"  },
+      { key: "amber",    label: "At Risk"   },
+      { key: "red",      label: "Off Track" },
+    ].filter(r => c[r.key] > 0).map(r => `
+      <div class="dept-rag-row">
+        <span class="dept-rag-label">
+          <span class="dept-rag-dot" style="background:${RAG_COLOR[r.key]}"></span>${r.label}
+        </span>
+        <span class="dept-rag-count" style="color:${RAG_COLOR[r.key]}">${c[r.key]}</span>
       </div>
-      <div class="targets-grid" id="grid-${dri.replace(/\s+/g,'_')}"></div>`;
+    `).join("");
 
-    container.appendChild(group);
+    card.innerHTML = `
+      <div class="dept-card-top">
+        <div class="dept-name">${dept.key}</div>
+        <div class="dept-owner">${dept.owner}</div>
+        <div class="dept-goal-count">${total} goal${total !== 1 ? "s" : ""}</div>
+      </div>
+      <div class="dept-bar">
+        <div class="dept-bar-seg" style="background:#6366F1;width:${pct(c.complete)}"></div>
+        <div class="dept-bar-seg" style="background:#10B981;width:${pct(c.green)}"></div>
+        <div class="dept-bar-seg" style="background:#F59E0B;width:${pct(c.amber)}"></div>
+        <div class="dept-bar-seg" style="background:#EF4444;width:${pct(c.red)}"></div>
+      </div>
+      <div class="dept-rags">${ragRows}</div>
+      <div class="view-detail">View goals →</div>
+    `;
 
-    // Wire up clickable name
-    group.querySelector(".owner-name-link").addEventListener("click", () => {
-      selectOwner(isFiltered ? "All" : dri);
-    });
-
-    const grid = group.querySelector(".targets-grid");
-    items.forEach((t) => {
-      const idx = TARGETS.indexOf(t);
-      const card = document.createElement("div");
-      card.className = "target-card";
-      card.dataset.flag = t.flag;
-      card.innerHTML = `
-        <div class="card-top">
-          <div class="target-title">${t.title}</div>
-          <span class="status-tag tag-${t.flag}">${FLAG_LABEL[t.flag]}</span>
-        </div>
-        <div class="card-status-val">${t.status}</div>
-        <div class="progress-track"><div class="progress-fill" style="width:${t.pct}%;background:${FLAG_COLOR[t.flag]}"></div></div>
-        <div class="card-narrative" id="narr-${idx}">${t.narrative}</div>
-        <button class="expand-btn" onclick="toggleNarr(${idx},this)">+ expand</button>`;
-      grid.appendChild(card);
-    });
+    grid.appendChild(card);
   });
 }
 
-function toggleNarr(idx, btn) {
-  const el = document.getElementById("narr-"+idx);
-  el.classList.toggle("open");
-  btn.textContent = el.classList.contains("open") ? "− collapse" : "+ expand";
-}
-
-// ── CHART ── builds once, updates on filter
-function getFilteredTargets() {
-  return TARGETS.filter(t =>
-    (activeOwner === "All" || t.dri === activeOwner) &&
-    (activeStatus === "all" ||
-     (activeStatus === "complete" && t.pct === 100) ||
-     (activeStatus !== "complete" && t.flag === activeStatus && t.pct !== 100))
-  );
-}
-
-function buildChart() {
-  const filtered = getFilteredTargets();
-  const labels = filtered.map(t => t.title.length > 30 ? t.title.slice(0,29)+"…" : t.title);
-  const colors = filtered.map(t => FLAG_COLOR[t.flag]);
-  const h = Math.max(260, filtered.length * 30 + 60);
-  const wrapper = document.getElementById("progressChart").parentElement;
-  wrapper.style.height = h+"px";
-
-  if (chartInstance) chartInstance.destroy();
-
-  chartInstance = new Chart(document.getElementById("progressChart"), {
-    type: "bar",
-    data: {
-      labels,
-      datasets: [{
-        label: "Progress",
-        data: filtered.map(t=>t.pct),
-        backgroundColor: colors.map(c=>c+"bb"),
-        borderColor: colors,
-        borderWidth: 1,
-        borderRadius: 3,
-        borderSkipped: false,
-      }]
-    },
-    options: {
-      indexAxis: "y",
-      responsive: true,
-      maintainAspectRatio: false,
-      onClick: (evt, elements) => {
-        if (!elements.length) return;
-        const clickedTarget = filtered[elements[0].index];
-        if (!clickedTarget) return;
-        const owner = clickedTarget.dri;
-        selectOwner(activeOwner === owner ? "All" : owner);
-      },
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          callbacks: {
-            label: c => ` ${c.raw}% complete — click bar to filter`,
-            title: c => filtered[c[0].dataIndex]?.title ?? "",
-          },
-          backgroundColor: "#1f0052",
-          borderColor: "rgba(161,104,255,.3)",
-          borderWidth: 1,
-          titleColor: "#f5f0ff",
-          bodyColor: "#C9B0FF",
-          padding: 10,
-        }
-      },
-      scales: {
-        x: {
-          min: 0, max: 100,
-          ticks: { color: "#6204FF", font: { family:"'DM Sans'", size:10 }, callback: v => v+"%" },
-          grid: { color: "rgba(161,104,255,.1)" },
-          border: { color: "transparent" }
-        },
-        y: {
-          ticks: { color: "#C9B0FF", font: { family:"'DM Sans'", size:11 } },
-          grid: { display: false },
-          border: { color: "transparent" }
-        }
-      }
-    }
-  });
-
-  // Update cursor to pointer over bars
-  document.getElementById("progressChart").style.cursor = "pointer";
-}
-
-function updateChart() {
-  buildChart();
-}
-
-buildOwnerFilters();
-renderAll();
-buildChart();
-
-(function sizeSummaryCells() {
-  const total = TARGETS.length;
-  const counts = { green: 0, yellow: 0, red: 0, blue: 0 };
-  TARGETS.forEach(t => { if (t.pct === 100) counts.blue++; else counts[t.flag]++; });
-  const MIN = 12;
-  [['blue',counts.blue],['green',counts.green],['yellow',counts.yellow],['red',counts.red]].forEach(([k,c]) => {
-    const raw = (c / total) * 100;
-    document.getElementById('cell-'+k).style.flex = Math.max(raw, MIN) + ' 0 0%';
-    document.getElementById('pct-'+k).textContent = Math.round(raw) + '% of sprint goals';
-  });
-})();
+renderStats();
+renderBar();
+renderDepts();
 </script>
 </body>
 </html>
