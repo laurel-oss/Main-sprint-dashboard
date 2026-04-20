@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Brellium — April 2026 Sprint</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg:      #190042;
+    --bg2:     #1f0052;
+    --card:    #240060;
+    --border:  rgba(161,104,255,0.18);
+    --accent:  #A168FF;
+    --muted:   #C9B0FF;
+    --text:    #EDE0FF;
+    --subtext: #B89FDD;
+    --green:   #10B981;
+    --amber:   #F59E0B;
+    --red:     #EF4444;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width:100%; height:100%; font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); overflow:hidden; }
+  header { display:flex; align-items:center; justify-content:space-between; padding:0 48px; height:76px; background:var(--bg2); border-bottom:1px solid var(--border); flex-shrink:0; }
+  .logo-name { font-size:22px; font-weight:700; letter-spacing:-0.4px; color:#fff; }
+  .header-right { display:flex; align-items:baseline; gap:10px; }
+  .header-sprint { font-size:18px; font-weight:600; color:var(--accent); letter-spacing:-0.2px; }
+  .header-divider { color:var(--border); font-size:18px; }
+  .header-updated { font-size:15px; font-weight:400; color:var(--subtext); }
+  .header-updated strong { font-weight:600; color:var(--muted); }
+  .page { display:flex; flex-direction:column; height:calc(100vh - 76px); padding:28px 48px 24px; gap:24px; }
+  .stats-row { display:grid; grid-template-columns:repeat(5,1fr); gap:16px; flex-shrink:0; }
+  .stat-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px 24px; display:flex; flex-direction:column; gap:4px; }
+  .stat-label { font-size:11px; font-weight:600; letter-spacing:0.9px; text-transform:uppercase; color:var(--subtext); }
+  .stat-value { font-size:44px; font-weight:700; letter-spacing:-1px; line-height:1; color:#fff; }
+  .stat-sub { font-size:13px; color:var(--subtext); margin-top:2px; }
+  .bar-wrap { flex-shrink:0; }
+  .bar-label-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+  .bar-title { font-size:12px; font-weight:600; letter-spacing:0.6px; text-transform:uppercase; color:var(--subtext); }
+  .bar-legend { display:flex; gap:20px; }
+  .legend-item { display:flex; align-items:center; gap:7px; font-size:13px; font-weight:500; color:var(--muted); }
+  .legend-dot { width:10px; height:10px; border-radius:50%; }
+  .bar-track { height:14px; background:rgba(255,255,255,0.06); border-radius:99px; overflow:hidden; display:flex; }
+  .bar-seg { height:100%; }
+  .dept-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:14px; flex:1; min-height:0; }
+  .dept-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:20px 18px; display:flex; flex-direction:column; overflow:hidden; cursor:pointer; transition:border-color 0.2s,transform 0.15s; text-decoration:none; }
+  .dept-card:hover { border-color:rgba(161,104,255,0.4); transform:translateY(-2px); }
+  .dept-card-top { margin-bottom:14px; }
+  .dept-name { font-size:11px; font-weight:600; letter-spacing:0.8px; text-transform:uppercase; color:var(--subtext); margin-bottom:4px; }
+  .dept-owner { font-size:17px; font-weight:700; color:#fff; letter-spacing:-0.3px; line-height:1.2; }
+  .dept-goal-count { font-size:12px; color:var(--subtext); margin-top:4px; }
+  .dept-bar { height:6px; background:rgba(255,255,255,0.06); border-radius:99px; overflow:hidden; display:flex; margin-bottom:14px; }
+  .dept-bar-seg { height:100%; }
+  .dept-rags { display:flex; flex-direction:column; gap:6px; flex:1; }
+  .dept-rag-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .dept-rag-label { font-size:12px; color:var(--subtext); display:flex; align-items:center; gap:6px; }
+  .dept-rag-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+  .dept-rag-count { font-size:15px; font-weight:700; color:var(--muted); }
+  .view-detail { font-size:11px; font-weight:600; color:var(--accent); letter-spacing:0.4px; margin-top:auto; padding-top:12px; }
+</style>
+</head>
+<body>
+<header>
+  <span class="logo-name">Brellium</span>
+  <div class="header-right">
+    <span class="header-sprint">April 2026 Sprint</span>
+    <span class="header-divider">·</span>
+    <span class="header-updated"><strong>Updated</strong> April 17, 2026</span>
+  </div>
+</header>
+<div class="page">
+  <div class="stats-row" id="stats-row"></div>
+  <div class="bar-wrap">
+    <div class="bar-label-row">
+      <span class="bar-title">Sprint Progress</span>
+      <div class="bar-legend">
+        <span class="legend-item"><span class="legend-dot" style="background:#6366F1"></span>Complete</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--green)"></span>On Track</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--amber)"></span>At Risk</span>
+        <span class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>Off Track</span>
+      </div>
+    </div>
+    <div class="bar-track" id="bar-track"></div>
+  </div>
+  <div class="dept-grid" id="dept-grid"></div>
+</div>
+<script>
+const GOALS=[
+  {dept:"Sales",                 owner:"Justin Greenwald",     rag:"amber"},
+  {dept:"Sales",                 owner:"Justin Greenwald",     rag:"amber"},
+  {dept:"Sales",                 owner:"Justin Greenwald",     rag:"red"},
+  {dept:"Marketing",             owner:"Madison Waldvogel",    rag:"green"},
+  {dept:"Marketing",             owner:"Madison Waldvogel",    rag:"green"},
+  {dept:"Marketing",             owner:"Madison Waldvogel",    rag:"amber"},
+  {dept:"Marketing",             owner:"Madison Waldvogel",    rag:"green"},
+  {dept:"Product & Engineering", owner:"Mitchell Mom",         rag:"amber"},
+  {dept:"Product & Engineering", owner:"Mitchell Mom",         rag:"amber"},
+  {dept:"Product & Engineering", owner:"Mitchell Mom",         rag:"amber"},
+  {dept:"Customer Deployment",   owner:"Karina McDonough",     rag:"red"},
+  {dept:"Customer Deployment",   owner:"Karina McDonough",     rag:"amber"},
+  {dept:"Customer Deployment",   owner:"Karina McDonough",     rag:"red"},
+  {dept:"Customer Deployment",   owner:"Karina McDonough",     rag:"amber"},
+  {dept:"Partnerships",          owner:"Zach Rosen",           rag:"green"},
+  {dept:"Partnerships",          owner:"Zach Rosen",           rag:"amber"},
+  {dept:"Partnerships",          owner:"Zach Rosen",           rag:"amber"},
+  {dept:"People",                owner:"Laurel Handler-Vosen", rag:"amber"},
+  {dept:"People",                owner:"Laurel Handler-Vosen", rag:"amber"},
+  {dept:"People",                owner:"Laurel Handler-Vosen", rag:"green"},
+  {dept:"Finance",               owner:"Sid Jain",             rag:"complete"},
+  {dept:"Finance",               owner:"Sid Jain",             rag:"amber"},
+  {dept:"Finance",               owner:"Sid Jain",             rag:"amber"},
+];
+const DEPTS=[
+  {key:"Sales",                 owner:"Justin Greenwald"},
+  {key:"Marketing",             owner:"Madison Waldvogel"},
+  {key:"Product & Engineering", owner:"Mitchell Mom"},
+  {key:"Customer Deployment",   owner:"Karina McDonough"},
+  {key:"Partnerships",          owner:"Zach Rosen"},
+  {key:"People",                owner:"Laurel Handler-Vosen"},
+  {key:"Finance",               owner:"Sid Jain"},
+];
+const RAG_COLOR={complete:"#6366F1",green:"#10B981",amber:"#F59E0B",red:"#EF4444"};
+function countByRag(goals){const c={complete:0,green:0,amber:0,red:0};goals.forEach(g=>{if(c[g.rag]!==undefined)c[g.rag]++;});return c;}
+function renderStats(){
+  const c=countByRag(GOALS);const total=GOALS.length;const pct=v=>total?Math.round(v/total*100)+"%":"—";
+  const items=[
+    {label:"Total Goals",value:total,      sub:"across 7 departments",color:"#fff"},
+    {label:"Complete",   value:c.complete, sub:pct(c.complete),       color:"#6366F1"},
+    {label:"On Track",   value:c.green,    sub:pct(c.green),          color:"#10B981"},
+    {label:"At Risk",    value:c.amber,    sub:pct(c.amber),          color:"#F59E0B"},
+    {label:"Off Track",  value:c.red,      sub:pct(c.red),            color:"#EF4444"},
+  ];
+  document.getElementById("stats-row").innerHTML=items.map(i=>`<div class="stat-card"><span class="stat-label">${i.label}</span><span class="stat-value" style="color:${i.color}">${i.value}</span><span class="stat-sub">${i.sub}</span></div>`).join("");
+}
+function renderBar(){
+  const c=countByRag(GOALS);const total=GOALS.length;const pct=v=>(v/total*100).toFixed(1)+"%";
+  document.getElementById("bar-track").innerHTML=`<div class="bar-seg" style="background:#6366F1;width:${pct(c.complete)}"></div><div class="bar-seg" style="background:#10B981;width:${pct(c.green)}"></div><div class="bar-seg" style="background:#F59E0B;width:${pct(c.amber)}"></div><div class="bar-seg" style="background:#EF4444;width:${pct(c.red)}"></div>`;
+}
+function renderDepts(){
+  const grid=document.getElementById("dept-grid");grid.innerHTML="";
+  DEPTS.forEach(dept=>{
+    const goals=GOALS.filter(g=>g.dept===dept.key);
+    const c=countByRag(goals);const total=goals.length;const pct=v=>(v/total*100).toFixed(1)+"%";
+    const card=document.createElement("a");card.className="dept-card";card.href="dashboard.html";
+    const ragRows=[
+      {key:"complete",label:"Complete"},{key:"green",label:"On Track"},{key:"amber",label:"At Risk"},{key:"red",label:"Off Track"}
+    ].filter(r=>c[r.key]>0).map(r=>`<div class="dept-rag-row"><span class="dept-rag-label"><span class="dept-rag-dot" style="background:${RAG_COLOR[r.key]}"></span>${r.label}</span><span class="dept-rag-count" style="color:${RAG_COLOR[r.key]}">${c[r.key]}</span></div>`).join("");
+    card.innerHTML=`<div class="dept-card-top"><div class="dept-name">${dept.key}</div><div class="dept-owner">${dept.owner}</div><div class="dept-goal-count">${total} goal${total!==1?"s":""}</div></div><div class="dept-bar"><div class="dept-bar-seg" style="background:#6366F1;width:${pct(c.complete)}"></div><div class="dept-bar-seg" style="background:#10B981;width:${pct(c.green)}"></div><div class="dept-bar-seg" style="background:#F59E0B;width:${pct(c.amber)}"></div><div class="dept-bar-seg" style="background:#EF4444;width:${pct(c.red)}"></div></div><div class="dept-rags">${ragRows}</div><div class="view-detail">View goals →</div>`;
+    grid.appendChild(card);
+  });
+}
+renderStats();renderBar();renderDepts();
+</script>
+</body>
+</html>
